@@ -2,16 +2,17 @@ CC=g++
 CC_FLAGS=-std=c++11 -Wall -g #-DNDEBUG
 
 # File names
-EXEC = main
-SOURCES = $(wildcard *.cpp)
-OBJECTS = $(SOURCES:.cpp=.o)
+EXEC = bin/main
+SOURCES = $(wildcard src/*.cpp)
+INCLUDES = $(wildcard src/*.h)
+OBJECTS = $(SOURCES:src/%.cpp=obj/%.o)
 
 # Main target
 $(EXEC): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(EXEC)
 
 # To obtain object files
-%.o: %.cpp
+$(OBJECTS): obj/%.o : src/%.cpp
 	$(CC) -c $(CC_FLAGS) $< -o $@
 
 # To remove generated files

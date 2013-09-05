@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "dataset.h"
 
-double GetSquaredDistance(dataset train, size_t trainExample, dataset target, size_t targetExample) {
+double GetSquaredDistance(DatasetPointer train, size_t trainExample, DatasetPointer target, size_t targetExample) {
 	assert(train->cols == target->cols);
 	double sum = 0;
 	double difference;
@@ -14,8 +14,8 @@ double GetSquaredDistance(dataset train, size_t trainExample, dataset target, si
 	return sum;
 }
 
-KNNResults KNN::run(int k, dataset target) {
-	matrix results(new matrix_base(target->rows,target->numLabels));
+KNNResults KNN::run(int k, DatasetPointer target) {
+	MatrixPointer results(new matrix_base(target->rows,target->numLabels));
 	results->clear();
 
 	//squaredDistances: first is the distance; second is the trainExample row

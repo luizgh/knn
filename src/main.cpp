@@ -11,7 +11,7 @@ int main()
 	int labels[] = { 0,0, 1, 1, 2, 2 };
 
 	srand(time(0));
-	dataset data = dataset(new dataset_base(6,2, 3));
+	DatasetPointer data = DatasetPointer(new dataset_base(6,2, 3));
 	for(int i=0;i<5;i++)
 		for (int j =0;j<2;j++)
 			data->pos(i,j) = sampleData[i *2 +j];
@@ -19,7 +19,7 @@ int main()
 		data->label(i) = labels[i];
 
 
-	dataset train, valid;
+	DatasetPointer train, valid;
 	data->splitDataset(train, valid, 0.7 );
 
 	KNN knn(train);

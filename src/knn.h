@@ -2,13 +2,14 @@
 #define KNN_H
 
 #include "dataset.h"
+
 class SingleExecutionResults {
 public:
 	SingleExecutionResults(int nExamples, int nSuccess, int nRejected) {
 		this->nExamples = nExamples;
 		this->nSuccess = nSuccess;
 		this->nRejected = nRejected;
-	}	
+	}
 
 	double successRate() { return nSuccess / (nExamples - nRejected);}
 	double rejectionRate() { return nRejected / nExamples; }
@@ -19,28 +20,29 @@ private:
 	int nRejected;
 };
 
+
 class KNNResults {
 public:
 	SingleExecutionResults top1Result() { return topXResult(1); }
 	SingleExecutionResults topXResult(int n);
-	dataset getConfusionMatrix();
+	DatasetPointer getConfusionMatrix();
 	
-	KNNResults(matrix results) { this->results = results;}
+	KNNResults(MatrixPointer results) { this->results = results;}
 
 private:
-	matrix results;
+	MatrixPointer results;
 
 };
-	
+
 
 class KNN {
 public:
-	KNN (dataset train) { this->data = train; }
-	
-	KNNResults run(int k, dataset target);
+	KNN (DatasetPointer train) { this->data = train; }
 
-private: 
-	dataset data;
+	KNNResults run(int k, DatasetPointer target);
+
+private:
+	DatasetPointer data;
 };
 
 #endif /* KNN_H */

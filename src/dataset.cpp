@@ -1,6 +1,8 @@
 #include <memory>
 #include <algorithm>
 #include "dataset.h"
+#include "debug.h"
+#include <cstdio>
 
 
 void fillWithRandomIndices(int *indices, size_t nIndices) {
@@ -8,14 +10,14 @@ void fillWithRandomIndices(int *indices, size_t nIndices) {
 	std::random_shuffle(indices, indices + nIndices);
 }
 
-void dataset_base::splitDataset(dataset &train, dataset &valid, double train_percent) {
+void dataset_base::splitDataset(DatasetPointer &train, DatasetPointer &valid, double train_percent) {
 	int randomIndices[rows];
 	fillWithRandomIndices(randomIndices, rows);
 
 	size_t threshold = (size_t) (train_percent * rows);
 
-	train = dataset(new dataset_base(threshold, cols, numLabels));
-	valid = dataset(new dataset_base(rows - threshold, cols, numLabels));
+	train = DatasetPointer(new dataset_base(threshold, cols, numLabels));
+	valid = DatasetPointer(new dataset_base(rows - threshold, cols, numLabels));
 
 	size_t currentRowTrain=0;
 	size_t currentRowValid=0;
@@ -36,8 +38,13 @@ void dataset_base::splitDataset(dataset &train, dataset &valid, double train_per
 	}
 }
 
-void matrix_base::clear() {
-	for (size_t i = 0; i<rows;i++)
-		for(size_t j =0; j<cols; j++)
-			pos(i,j) = 0;
+dataset_base::dataset_base(size_t rows, size_t cols, size_t numLabels) : matrix_base(rows,cols) {
+	labels = new int[rows];
+	this->numLabels = numLabels;
+	DEBUG("allocated int: %lu in %p\n",rows,labels);
+}
+
+ dataset_base::~dataset_base() {
+		DEBUG("deleted: %lu in %p\n",rows,labels);
+		delete [] labels;
 }
