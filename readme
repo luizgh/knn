@@ -1,0 +1,15 @@
+read train and test datasets
+
+split train dataset into train and validation
+use KNN on train - return classification matrix (posterior distribution for each class)
+use KNN on valid - choose the best K
+
+Calculate:
+
+1) Success rate, rejection rate for different K
+2) Confusion Matrix
+3) Top X success rate
+
+
+
+KNN Results: matrix of Nexamples X K, with the probability of example X being assigned to class K

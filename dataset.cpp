@@ -1,0 +1,43 @@
+#include <memory>
+#include <algorithm>
+#include "dataset.h"
+
+
+void fillWithRandomIndices(int *indices, size_t nIndices) {
+	for(size_t i = 0; i< nIndices; i++) indices[i] = i;
+	std::random_shuffle(indices, indices + nIndices);
+}
+
+void dataset_base::splitDataset(dataset &train, dataset &valid, double train_percent) {
+	int randomIndices[rows];
+	fillWithRandomIndices(randomIndices, rows);
+
+	size_t threshold = (size_t) (train_percent * rows);
+
+	train = dataset(new dataset_base(threshold, cols, numLabels));
+	valid = dataset(new dataset_base(rows - threshold, cols, numLabels));
+
+	size_t currentRowTrain=0;
+	size_t currentRowValid=0;
+	for(size_t i =0; i< rows; i++)
+	{
+		if (i < threshold) {
+			for (size_t j=0; j < cols; j++)
+				train->pos(currentRowTrain, j) = pos(randomIndices[i],j);
+			currentRowTrain++;
+			train->label(currentRowTrain) = label(randomIndices[i]);
+		}
+		else {
+			for (size_t j=0; j < cols; j++)
+				valid->pos(currentRowValid, j) = pos(randomIndices[i],j);
+			valid->label(currentRowValid) = label(randomIndices[i]);
+			currentRowValid++;
+		}
+	}
+}
+
+void matrix_base::clear() {
+	for (size_t i = 0; i<rows;i++)
+		for(size_t j =0; j<cols; j++)
+			pos(i,j) = 0;
+}
