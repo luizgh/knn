@@ -4,11 +4,21 @@
 #include "debug.h"
 #include <cstdio>
 
+dataset_base::dataset_base(size_t rows, size_t cols, size_t numLabels) : matrix_base(rows,cols) {
+	labels = new int[rows];
+	this->numLabels = numLabels;
+	DEBUGMEM("dataset: allocated int: %lu in %p\n",rows,labels);
+}
+
+ dataset_base::~dataset_base() {
+	 DEBUGMEM("dataset: deleting: %lu in %p\n",rows,labels);
+	 delete [] labels;
+}
 
 void fillWithRandomIndices(int *indices, size_t nIndices) {
-	for(size_t i = 0; i< nIndices; i++) indices[i] = i;
-	std::random_shuffle(indices, indices + nIndices);
-}
+ 	for(size_t i = 0; i< nIndices; i++) indices[i] = i;
+ 	std::random_shuffle(indices, indices + nIndices);
+ }
 
 void dataset_base::splitDataset(DatasetPointer &train, DatasetPointer &valid, double train_percent) {
 	int randomIndices[rows];
@@ -38,13 +48,4 @@ void dataset_base::splitDataset(DatasetPointer &train, DatasetPointer &valid, do
 	}
 }
 
-dataset_base::dataset_base(size_t rows, size_t cols, size_t numLabels) : matrix_base(rows,cols) {
-	labels = new int[rows];
-	this->numLabels = numLabels;
-	DEBUG("allocated int: %lu in %p\n",rows,labels);
-}
 
- dataset_base::~dataset_base() {
-		DEBUG("deleted: %lu in %p\n",rows,labels);
-		delete [] labels;
-}

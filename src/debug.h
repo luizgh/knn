@@ -1,10 +1,11 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#ifndef NDEBUG
-	#define DEBUG printf
+#ifdef DEBUGMEMORY
+	#define DEBUGMEM printf
 #else
-	#define DEBUG(...)
+	#define DEBUGMEM(...)
 #endif
+
 
 #endif /* DEBUG_H */

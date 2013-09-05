@@ -27,6 +27,8 @@ public:
 	SingleExecutionResults topXResult(int n);
 	DatasetPointer getConfusionMatrix();
 	
+	MatrixPointer getRawResults() {return results;}
+
 	KNNResults(MatrixPointer results) { this->results = results;}
 
 private:

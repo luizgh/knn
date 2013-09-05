@@ -13,11 +13,11 @@ matrix_base::matrix_base(size_t rows, size_t cols) {
 		data = new double[rows*cols] ;
 		this->rows = rows;
 		this->cols = cols;
-		DEBUG("allocated double: %lu * %lu in %p\n",rows,cols,data);
+		DEBUGMEM("matrix: allocated double: %lu * %lu in %p\n",rows,cols,data);
 }
 
 matrix_base::~matrix_base() {
-	DEBUG("deleted: %lu x %lu from %p\n",rows,cols,data);
+	DEBUGMEM("matrix: deleting: %lu x %lu from %p\n",rows,cols,data);
 	delete [] data;
 }
 
