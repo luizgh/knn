@@ -2,6 +2,8 @@
 #include <cassert>
 #include <algorithm>
 #include "dataset.h"
+#include <iostream>
+#include "debug.h"
 
 double GetSquaredDistance(DatasetPointer train, size_t trainExample, DatasetPointer target, size_t targetExample) {
 	assert(train->cols == target->cols);
@@ -15,13 +17,14 @@ double GetSquaredDistance(DatasetPointer train, size_t trainExample, DatasetPoin
 }
 
 KNNResults KNN::run(int k, DatasetPointer target) {
-	MatrixPointer results(new matrix_base(target->rows,target->numLabels));
+	DatasetPointer results(new dataset_base(target->rows,target->numLabels, target->numLabels));
 	results->clear();
 
 	//squaredDistances: first is the distance; second is the trainExample row
 	std::pair<double, int> squaredDistances[data->rows];
 
 	for(size_t targetExample = 0; targetExample < target->rows; targetExample++) {
+		DEBUGKNN("Target %lu of %lu\n", targetExample, target->rows );
 
 		//Find distance to all examples in the training set
 		for (size_t trainExample = 0; trainExample < data->rows; trainExample++) {
@@ -32,7 +35,7 @@ KNNResults KNN::run(int k, DatasetPointer target) {
 		//sort by closest distance
 		sort(squaredDistances, squaredDistances + data->rows);
 		
-		//count classes of nearest neighbours
+		//count classes of nearest neighbors
 		size_t nClasses = target->numLabels;
 		int countClosestClasses[nClasses];
 		for(size_t i = 0; i< nClasses; i++)
@@ -50,6 +53,10 @@ KNNResults KNN::run(int k, DatasetPointer target) {
 			results->pos(targetExample, i) = ((double)countClosestClasses[i]) / k;
 		}
 	}
+
+	//copy expected labels:
+	for (size_t i = 0; i < target->rows; i++)
+		results->label(i) = target->label(i);
 
 	return KNNResults(results);
 }

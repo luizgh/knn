@@ -10,22 +10,9 @@
 #include <cassert>
 #include <iostream>
 #include <cmath>
+#include "testUtils.h"
 
 using namespace std;
-
-template <typename T>
-void assertEquals(T expected, T actual) {
-	if (expected  != actual) {
-		cout << "Error: Expected: " << expected << "; Actual: " << actual << "\n";
-		exit(1);
-	}
-}
-void assertDoubleEquals(double expected, double actual, double maxError = 1e-3) {
-	if (fabs(expected-actual) > maxError) {
-		cout << "Error: Expected: " << expected << "; Actual: " << actual << "\n";
-		exit(1);
-	}
-}
 
 int main()
 {
@@ -40,5 +27,5 @@ int main()
 
 	assertEquals(9, data->label(149999));
 
-
+	printf("%s OK!\n", __FILE__);
 }

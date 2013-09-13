@@ -10,6 +10,7 @@
 #include <cstdio>
 
 matrix_base::matrix_base(size_t rows, size_t cols) {
+	    DEBUGMEM("matrix: allocating double: %lu * %lu \n",rows,cols);
 		data = new double[rows*cols] ;
 		this->rows = rows;
 		this->cols = cols;

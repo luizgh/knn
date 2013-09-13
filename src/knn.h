@@ -14,7 +14,6 @@ public:
 	double successRate() { return nSuccess / (nExamples - nRejected);}
 	double rejectionRate() { return nRejected / nExamples; }
 
-private:
 	int nExamples;
 	int nSuccess;
 	int nRejected;
@@ -25,14 +24,14 @@ class KNNResults {
 public:
 	SingleExecutionResults top1Result() { return topXResult(1); }
 	SingleExecutionResults topXResult(int n);
-	DatasetPointer getConfusionMatrix();
+	MatrixPointer getConfusionMatrix();
 	
-	MatrixPointer getRawResults() {return results;}
+	DatasetPointer getRawResults() {return results;}
 
-	KNNResults(MatrixPointer results) { this->results = results;}
+	KNNResults(DatasetPointer results) { this->results = results;}
 
 private:
-	MatrixPointer results;
+	DatasetPointer results;
 
 };
 

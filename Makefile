@@ -1,5 +1,5 @@
 CC=g++
-CC_FLAGS=-std=c++11 -Wall -g #-DNDEBUG
+CC_FLAGS=-std=c++11 -Wall -g -DDEBUG_KNN 
 
 
 
@@ -24,7 +24,7 @@ $(EXEC): $(OBJECTS)
 
 $(TESTTARGETS): bin/% : test/%.cpp $(TESTOBJECTS)
 	$(CC) $(CC_FLAGS) -o $@ $< $(TESTOBJECTS) -Isrc/
-	./$@
+#	./$@
 
 # To obtain object files
 $(OBJECTS): obj/%.o : src/%.cpp

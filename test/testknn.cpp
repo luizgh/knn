@@ -4,19 +4,7 @@
 #include "knn.h"
 #include <cassert>
 #include <cmath>
-
-DatasetPointer makeDataset(int rows, int cols, int nLabels, double *sampleData, int *labels)
-{
-	DatasetPointer dataset = DatasetPointer(new dataset_base(rows,cols,nLabels));
-	for(int i=0;i<rows;i++)
-			for (int j =0;j<cols;j++)
-				dataset->pos(i,j) = sampleData[i *cols +j];
-		for(int i=0;i<rows;i++)
-			dataset->label(i) = labels[i];
-
-	return dataset;
-}
-
+#include "testUtils.h"
 
 int main() 
 {
@@ -33,7 +21,7 @@ int main()
 
 	KNN knn(train);
 	
-	MatrixPointer results =  knn.run(3, test).getRawResults();
+	DatasetPointer results =  knn.run(3, test).getRawResults();
 
 	double expected[] = { 2.0/3, 1.0/3, 0,
 						  0, 2.0/3, 1.0/3,
