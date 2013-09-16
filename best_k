@@ -1,0 +1,13 @@
+Reading train
+Trying K = 1 ... 0.983467
+Trying K = 2 ... 0.993658
+Trying K = 3 ... 0.987192
+Trying K = 4 ... 0.987436
+Trying K = 5 ... 0.986076
+Trying K = 6 ... 0.986639
+Trying K = 7 ... 0.984873
+Trying K = 8 ... 0.985516
+Trying K = 9 ... 0.984281
+Trying K = 10 ... 0.984782
+Best K: 2. Success rate in validation set: 0.993658
+

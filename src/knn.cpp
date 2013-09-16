@@ -27,7 +27,10 @@ KNNResults KNN::run(int k, DatasetPointer target) {
 
 	for(size_t targetExample = 0; targetExample < target->rows; targetExample++) {
 
-		DEBUGKNN("Target %lu of %lu\n", targetExample, target->rows);
+#ifdef DEBUG_KNN
+		if (targetExample % 100 == 0)
+				DEBUGKNN("Target %lu of %lu\n", targetExample, target->rows);
+#endif
 		//Find distance to all examples in the training set
 		for (size_t trainExample = 0; trainExample < data->rows; trainExample++) {
 				squaredDistances[trainExample].first = GetSquaredDistance(data, trainExample, target, targetExample);

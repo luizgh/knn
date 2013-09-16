@@ -4,46 +4,97 @@
 #include "dataset.h"
 #include "Preprocessing.h"
 #include <new>
+#include <cstring>
 
 using namespace std;
 
-void tryRunningKNN() {
-	int nLabels = 10;
+const int nLabels = 10;
+
+void runKnn(char *trainFile, char *testFile, int k) {
 	cout << "Reading train" <<endl;
-	DatasetPointer train = ReadDataset::read("CCtrain", nLabels);
-	cout << "Reading test1" <<endl;
-	DatasetPointer test1 = ReadDataset::read("CCtest1", nLabels);
+	DatasetPointer train = ReadDataset::read(trainFile, nLabels);
+	cout << "Reading test" <<endl;
+	DatasetPointer test = ReadDataset::read(testFile, nLabels);
 
-	DatasetPointer newTrain, valid, newTest;
-	train->splitDataset(newTrain, valid, 0.5);
-	test1->splitDataset(newTest, valid, 0.1);
+	MatrixPointer meanData = MeanNormalize(train);
 
-	printf ("New train: %lu\n", newTrain->rows);
+	KNN knn(train);
 
-	MatrixPointer meanData = MeanNormalize(newTrain);
+	ApplyMeanNormalization(test, meanData);
 
-	KNN knn(newTrain);
-
-	cout << "Running KNN on test1. " << newTest->numLabels <<endl;
-
-	ApplyMeanNormalization(newTest, meanData);
-
-	KNNResults res1 = knn.run(4, newTest);
+	KNNResults rawResults = knn.run(k, test);
 	cout << "Consolidating results";
-	SingleExecutionResults r1 = res1.top1Result();
-	printf("CCTest1: Success Rate: %lf, Rejection Rate: %lf\n", r1.successRate(), r1.rejectionRate());
-	//printf("CCTest2: Success Rate: %lf, Rejection Rate: %lf\n", r2.successRate(), r2.rejectionRate());
+	SingleExecutionResults top1 = rawResults.top1Result();
+	SingleExecutionResults top2 = rawResults.topXResult(2);
+	SingleExecutionResults top3 = rawResults.topXResult(3);
+
+	printf("Success Rate: %lf, Rejection Rate: %lf\n", top1.successRate(), top1.rejectionRate());
+	printf("Top 2 Success Rate: %lf\n", top2.successRate());
+	printf("Top 3 Success Rate: %lf\n", top3.successRate());
+	printf("Confusion matrix:\n");
+
+	MatrixPointer confusionMatrix = rawResults.getConfusionMatrix();
+
+	for(size_t i = 0; i< confusionMatrix->rows; i++) {
+		for(size_t j = 0; j< confusionMatrix->cols; j++) {
+			if (j!=0) printf(",");
+			printf("%d", (int)confusionMatrix->pos(i,j));
+		}
+		printf("\n");
+	}
 }
 
+void findBestK(char *trainFile) {
+	cout << "Reading train" <<endl;
+	DatasetPointer data = ReadDataset::read(trainFile, nLabels);
+
+	DatasetPointer train, valid;
+
+	data->splitDataset(train, valid, 0.9);
+
+	MatrixPointer meanData = MeanNormalize(train);
+	ApplyMeanNormalization(valid, meanData);
+
+	KNN knn(train);
+
+	double bestSuccessRate = 0;
+	int bestK = 0;
+
+	for(int k=1; k<=10; k++) {
+		printf("Trying K = %d ... ",k);
+		KNNResults res = knn.run(k, valid);
+		double currentSuccess = res.top1Result().successRate();
+		if (currentSuccess > bestSuccessRate) {
+			bestSuccessRate = currentSuccess;
+			bestK = k;
+		}
+		printf("%lf\n", currentSuccess);
+	}
+	printf("Best K: %d. Success rate in validation set: %lf\n", bestK, bestSuccessRate);
+}
+
+void printUsageAndExit(char **argv);
 
 
-int main()
+int main(int argc, char **argv)
 {
-	try {
-		tryRunningKNN();
-	} catch (bad_alloc &e) {
-		cerr << "Error Running KNN. Not enough memory: " << e.what();
+	if (argc != 3 && argc != 5) {
+		printUsageAndExit(argv);
 	}
 
+	if (strcmp(argv[1], "run") == 0) {
+		runKnn(argv[2], argv[3], atoi(argv[4]));
+	}
+	else if (strcmp(argv[1], "findbest") == 0) {
+		findBestK(argv[2]);
+	}
+	else
+		printUsageAndExit(argv);
 }
 
+void printUsageAndExit(char **argv) {
+	printf("Usage:\n"
+		"%s run <train dataset> <test dataset> <k> : run KNN\n"
+		"%s findbest <train dataset> : Find K that minimizes error (1~10)\n",argv[0], argv[0]);
+	exit(1);
+}
