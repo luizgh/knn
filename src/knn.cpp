@@ -17,6 +17,8 @@ double GetSquaredDistance(DatasetPointer train, size_t trainExample, DatasetPoin
 }
 
 KNNResults KNN::run(int k, DatasetPointer target) {
+
+
 	DatasetPointer results(new dataset_base(target->rows,target->numLabels, target->numLabels));
 	results->clear();
 
@@ -24,8 +26,8 @@ KNNResults KNN::run(int k, DatasetPointer target) {
 	std::pair<double, int> squaredDistances[data->rows];
 
 	for(size_t targetExample = 0; targetExample < target->rows; targetExample++) {
-		DEBUGKNN("Target %lu of %lu\n", targetExample, target->rows );
 
+		DEBUGKNN("Target %lu of %lu\n", targetExample, target->rows);
 		//Find distance to all examples in the training set
 		for (size_t trainExample = 0; trainExample < data->rows; trainExample++) {
 				squaredDistances[trainExample].first = GetSquaredDistance(data, trainExample, target, targetExample);
@@ -43,6 +45,7 @@ KNNResults KNN::run(int k, DatasetPointer target) {
 
 		for (int i = 0; i < k; i++)
 		{
+
 			int currentClass = data->label(squaredDistances[i].second);
 			countClosestClasses[currentClass]++;
 		}

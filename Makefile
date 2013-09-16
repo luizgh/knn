@@ -1,5 +1,5 @@
 CC=g++
-CC_FLAGS=-std=c++11 -Wall -g -DDEBUG_KNN 
+CC_FLAGS=-std=c++11 -Wall -g -DDEBUG_KNN -O3
 
 
 

@@ -36,8 +36,8 @@ void dataset_base::splitDataset(DatasetPointer &train, DatasetPointer &valid, do
 		if (i < threshold) {
 			for (size_t j=0; j < cols; j++)
 				train->pos(currentRowTrain, j) = pos(randomIndices[i],j);
-			currentRowTrain++;
 			train->label(currentRowTrain) = label(randomIndices[i]);
+			currentRowTrain++;
 		}
 		else {
 			for (size_t j=0; j < cols; j++)
